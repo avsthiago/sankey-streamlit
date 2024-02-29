@@ -1,19 +1,28 @@
-import matplotlib.pyplot as plt
-import streamlit as st
-from sankeyflow import Sankey
-import pandas as pd
+"""This module contains code for creating a dynamic Sankey diagram using Streamlit."""
+
 import io
 
+import matplotlib.pyplot as plt
+import pandas as pd
+import streamlit as st
+from sankeyflow import Sankey
 
 st.set_page_config(layout="wide", page_title="Dynamic Sankey Diagram")
 st.title("Dynamic Sankey Diagram")
-# create a side bar
-st.sidebar.title("Sankey Diagram")
 
-uploaded_file = st.sidebar.file_uploader("Choose a CSV file", type='csv')
+st.sidebar.title("Sankey Diagram")
+uploaded_file = st.sidebar.file_uploader("Choose a CSV file", type="csv")
 if uploaded_file is not None:
     st.session_state.df = pd.read_csv(uploaded_file)
-st.sidebar.markdown("[Dynamic Sankey Diagram](http://localhost:8000/#dynamic-sankey-diagram)")
+
+st.sidebar.number_input("Font Size", 5, 20, 10, 1, key="font_size")
+st.sidebar.number_input("Curviness", 0, 10, 3, 1, key="curvature")
+st.sidebar.selectbox(
+    "Color Palette",
+    index=0,
+    options=["tab10", "tab20", "Pastel1", "Pastel2", "Set1", "Set2", "Set3"],
+    key="color",
+)
 
 # Initialize or retrieve the DataFrame from the session state
 if "df" not in st.session_state:
@@ -26,12 +35,18 @@ if "df" not in st.session_state:
     )
 
 
-# Function to draw the Sankey diagram
 def draw_sankey(df):
     flows = list(df[["source", "target", "value"]].itertuples(index=False, name=None))
     # remove empty and nan values
     flows_clean = [x for x in flows if x[0] and x[1] and x[2] > 0]
-    s = Sankey(flows=flows_clean)  # node_opts=node_opts, flow_opts=flow_opts
+
+    s = Sankey(
+        flows=flows_clean,
+        cmap=plt.get_cmap(st.session_state.color),
+        node_opts={"label_opts": {"fontsize": st.session_state.font_size}},
+        flow_opts={"curvature": st.session_state.curvature / 10.0},
+    )
+
     s.draw()
     st.pyplot(plt)
     img = io.BytesIO()
@@ -66,14 +81,15 @@ def generate_image():
 
 
 col1, col2, col3, col4 = st.columns(4)
-col1.button("Empty DataFrame", on_click=empty_df)
+col1.button("Empty Table", on_click=empty_df)
 col2.button("Load Demo", on_click=load_demo_df)
 col3.download_button(
-    "Download DataFrame",
+    "Download Table",
     data=st.session_state.df.to_csv(index=False),
     file_name=f"sankey-{timestamp()}.csv",
     mime="text/csv",
 )
+
 
 if "image" in st.session_state and st.session_state.image:
     col4.download_button(
@@ -92,10 +108,8 @@ edited_df = st.data_editor(
     hide_index=True,
 )
 
+
 sankey_placeholder = st.empty()
 
 sankey_placeholder.empty()
 draw_sankey(edited_df)
-
-
-# empty df , load demo, , side bar with upload, how to use,
