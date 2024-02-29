@@ -24,8 +24,8 @@ st.sidebar.selectbox(
     key="color",
 )
 
-# Initialize or retrieve the DataFrame from the session state
-if "df" not in st.session_state:
+
+def load_demo_df():
     st.session_state.df = pd.DataFrame(
         {
             "source": ["Product", "Service and other", "Total revenue", "Total revenue"],
@@ -40,65 +40,48 @@ def draw_sankey(df):
     # remove empty and nan values
     flows_clean = [x for x in flows if x[0] and x[1] and x[2] > 0]
 
-    s = Sankey(
+    diagram = Sankey(
         flows=flows_clean,
         cmap=plt.get_cmap(st.session_state.color),
         node_opts={"label_opts": {"fontsize": st.session_state.font_size}},
         flow_opts={"curvature": st.session_state.curvature / 10.0},
     )
 
-    s.draw()
+    diagram.draw()
     st.pyplot(plt)
     img = io.BytesIO()
     plt.savefig(img, format="png")
     st.session_state.image = img
 
 
-# create an empty dataframe
 def empty_df():
     df = pd.DataFrame({"source": [""], "target": [""], "value": [None]})
     st.session_state.df = df.astype({"value": float})
-
-
-def load_demo_df():
-    st.session_state.df = pd.DataFrame(
-        {
-            "source": ["Product", "Service and other", "Total revenue", "Total revenue"],
-            "target": ["Total revenue", "Total revenue", "Gross margin", "Cost of revenue"],
-            "value": [20779, 30949, 34768, 10000],
-        }
-    )
 
 
 def timestamp():
     return pd.Timestamp.now().strftime("%Y%m%d%H%M%S")
 
 
-def generate_image():
-    img = io.BytesIO()
-    plt.savefig(img, format="png")
-    return img
+if "df" not in st.session_state:
+    load_demo_df()
 
 
 col1, col2, col3, col4 = st.columns(4)
-col1.button("Empty Table", on_click=empty_df)
-col2.button("Load Demo", on_click=load_demo_df)
-col3.download_button(
-    "Download Table",
-    data=st.session_state.df.to_csv(index=False),
-    file_name=f"sankey-{timestamp()}.csv",
-    mime="text/csv",
-)
 
-
-if "image" in st.session_state and st.session_state.image:
-    col4.download_button(
-        "Download Diagram",
-        data=st.session_state.image,
-        file_name=f"sankey-{timestamp()}.png",
-        mime="image/png",
+with col1:
+    st.button("Empty Table", on_click=empty_df)
+with col2:
+    st.button("Load Demo", on_click=load_demo_df)
+with col3:
+    st.download_button(
+        "Download Table",
+        data=st.session_state.df.to_csv(index=False),
+        file_name=f"sankey-{timestamp()}.csv",
+        mime="text/csv",
     )
-
+with col4:
+    download_button_placeholder = st.empty()
 
 edited_df = st.data_editor(
     st.session_state.df,
@@ -113,3 +96,11 @@ sankey_placeholder = st.empty()
 
 sankey_placeholder.empty()
 draw_sankey(edited_df)
+
+if "image" in st.session_state and st.session_state.image:
+    download_button_placeholder.download_button(
+        "Download Diagram",
+        data=st.session_state.image,
+        file_name=f"sankey-{timestamp()}.png",
+        mime="image/png",
+    )
