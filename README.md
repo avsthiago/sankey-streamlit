@@ -4,7 +4,7 @@
 
 A Streamlit app to generate Sankey diagrams.
 
-![Sankey Diagram]("artifacts/sankey.png")
+![Sankey Diagram]("artifacts/demo.png")
 
 ## Contributing
 
