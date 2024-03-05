@@ -1,10 +1,12 @@
-[![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/avsthiago/sankey-streamlit)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://sankey.streamlit.app/)
 
 # sankey-streamlit
 
 A Streamlit app to generate Sankey diagrams.
 
 ![Sankey Diagram](artifacts/demo.png)
+
+
 
 ## Contributing
 
