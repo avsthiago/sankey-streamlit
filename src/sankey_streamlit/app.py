@@ -7,8 +7,8 @@ import pandas as pd
 import streamlit as st
 from sankeyflow import Sankey
 
-st.set_page_config(layout="wide", page_title="Dynamic Sankey Diagram")
-st.title("Dynamic Sankey Diagram")
+st.set_page_config(layout="wide", page_title="Sankey Diagram Generator")
+st.title("Sankey Diagram Generator")
 
 st.sidebar.title("Sankey Diagram")
 uploaded_file = st.sidebar.file_uploader("Choose a CSV file", type="csv")
