@@ -23,6 +23,7 @@ st.sidebar.selectbox(
     options=["tab10", "tab20", "Pastel1", "Pastel2", "Set1", "Set2", "Set3"],
     key="color",
 )
+st.sidebar.selectbox("Flow Color Mode", index=0, options=["source", "dest"], key="flow_color_mode")
 
 
 def load_demo_df():
@@ -43,6 +44,7 @@ def draw_sankey(df):
     diagram = Sankey(
         flows=flows_clean,
         cmap=plt.get_cmap(st.session_state.color),
+        flow_color_mode=st.session_state.flow_color_mode,
         node_opts={"label_opts": {"fontsize": st.session_state.font_size}},
         flow_opts={"curvature": st.session_state.curvature / 10.0},
     )
@@ -82,6 +84,18 @@ with col3:
     )
 with col4:
     download_button_placeholder = st.empty()
+
+# Add custom CSS to fix the jittering issue
+# https://github.com/streamlit/streamlit/issues/6900#issuecomment-1825835781
+# Should be fixed on streamlit 1.32
+st.write(
+    """<style>
+[data-testid="stDataFrameResizable"] {
+        border: 2px solid rgba(250, 250, 250, 0.1) !important;
+}
+</style>""",
+    unsafe_allow_html=True,
+)
 
 edited_df = st.data_editor(
     st.session_state.df,
