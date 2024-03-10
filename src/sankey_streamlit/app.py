@@ -85,18 +85,6 @@ with col3:
 with col4:
     download_button_placeholder = st.empty()
 
-# Add custom CSS to fix the jittering issue
-# https://github.com/streamlit/streamlit/issues/6900#issuecomment-1825835781
-# Should be fixed on streamlit 1.32
-st.write(
-    """<style>
-[data-testid="stDataFrameResizable"] {
-        border: 2px solid rgba(250, 250, 250, 0.1) !important;
-}
-</style>""",
-    unsafe_allow_html=True,
-)
-
 edited_df = st.data_editor(
     st.session_state.df,
     key="demo_df",
@@ -108,7 +96,6 @@ edited_df = st.data_editor(
 
 sankey_placeholder = st.empty()
 
-sankey_placeholder.empty()
 draw_sankey(edited_df)
 
 if "image" in st.session_state and st.session_state.image:

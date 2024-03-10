@@ -13,7 +13,7 @@ repository = "https://github.com/avsthiago/sankey-streamlit"
 [tool.poetry.dependencies]  # https://python-poetry.org/docs/dependency-specification/
 poethepoet = ">=0.20.0"
 python = ">=3.10,<4.0"
-streamlit = ">=1.19.0"
+streamlit = ">=1.20.0"
 matplotlib = "^3.8.3"
 sankeyflow = "^0.3.8"
 
