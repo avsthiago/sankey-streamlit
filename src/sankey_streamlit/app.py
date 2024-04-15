@@ -48,12 +48,13 @@ def draw_sankey(df):
         node_opts={"label_opts": {"fontsize": st.session_state.font_size}},
         flow_opts={"curvature": st.session_state.curvature / 10.0},
     )
-
-    diagram.draw()
-    st.pyplot(plt)
-    img = io.BytesIO()
-    plt.savefig(img, format="png")
-    st.session_state.image = img
+    _, col2, _ = st.columns([1, 7, 1])
+    with col2:
+        diagram.draw()
+        st.pyplot(plt)
+        img = io.BytesIO()
+        plt.savefig(img, format="png")
+        st.session_state.image = img
 
 
 def empty_df():
